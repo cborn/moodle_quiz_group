@@ -28,3 +28,6 @@ $plugin->version  = 2018030900;
 $plugin->requires  =2016051900;
 $plugin->component = 'quiz_group';
 
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = 'v3.1-r1';
+
