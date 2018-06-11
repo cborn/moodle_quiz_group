@@ -73,7 +73,7 @@ class quiz_group_settings_form extends moodleform {
 
 
         //submit button
-        $this->add_action_buttons(true, get_string('savechanges', 'quiz_group'), false);
+        $mform->addElement('submit', 'savechanges', get_string('savechanges', 'quiz_group'));
         //$mform->disabledIf('submitbutton', 'hasattempts', 'eq',true);
         //$mform->disabledIf('sel_groupingid', 'hasattempts', 'eq',true);
 

@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/quiz/report/group/groupsettings_form.php');
+require_once($CFG->dirroot . '/mod/quiz/report/group/groupdispatchgrade_form.php');
 require_once($CFG->dirroot . '/mod/quiz/report/group/locallib.php');
 
 
@@ -63,8 +64,6 @@ class quiz_group_report extends quiz_default_report{
         $pageoptions['id'] = $cm->id;
         $pageoptions['quizid'] = $quiz->id;
 
-       // $actionurl = new moodle_url('/mod/quiz/view.php', $pageoptions);
-
 
         // retrieve current grouping value for the given quizid return false if not found
         $grouping_record = $DB->get_record('quiz_group', array('quizid'=>$quiz->id), 'id, groupingid', 'IGNORE_MISSING');
@@ -79,11 +78,15 @@ class quiz_group_report extends quiz_default_report{
         $bool_hasattempts = quiz_has_attempts($quiz->id);
 
 
-        // create quiz group setting form
-        $form_params = array('quizid' => $quiz->id, 'idnumber' => $cm->id,  'hasattempts'=>$bool_hasattempts);
 
-        $mform = new quiz_group_settings_form($form_params, 'get');
+         // pramas for both Forms
+        $form_params = array('quizid' => $quiz->id, 'idnumber' => $cm->id,  'hasattempts'=>$bool_hasattempts);
         $toform = array("sel_groupingid"=>$groupingID/*, 'hasattempts'=>$bool_hasattempts*/);
+
+
+
+        // create quiz group setting form
+        $mform = new quiz_group_settings_form($form_params, 'get');
 
         // if cancel do nothing
         if ($mform->is_cancelled()) {
@@ -126,41 +129,21 @@ class quiz_group_report extends quiz_default_report{
 
 
 
-        // Dispatch grades to other group members button
+
+        // Create Dispatch grades to other group members button
+
         $pageoptions['mode'] = "group";
-        $actionurl = $PAGE->url;
-        $info_dispatchgrades_string = get_string('info_dispatchgrades', 'quiz_group');
-        $apply_string = get_string('apply', 'quiz_group');
-        $titleapply_string = get_string('titleapply', 'quiz_group');
 
-        $out ='<br/>';
-        $out .= html_writer::start_tag('form', array('method' => 'post',
-            'action' => $actionurl,
-            'class' => 'mform', 'id' => 'form_groupdispatchgrade'));
-        $out .=  html_writer::tag('h4', $titleapply_string);
-        $out .=  html_writer::tag('p', $info_dispatchgrades_string);
-        $out .=  html_writer::input_hidden_params(new moodle_url('', array(
-            'groupingid' => $groupingID,  'sesskey' => sesskey())));
-
-        $submit_btn = html_writer::empty_tag('input', array('type'=>'submit', 'value' => $apply_string, 'name'=> 'dispatchgrades'));
-        $submit_div =  html_writer::tag('div',$submit_btn, array('class'=>'felement fgroup'));
-
-        $out .= html_writer::tag('div',$submit_div, array('id'=>'fgroup_id_buttonar', 'class'=>'fitem fitem_actionbuttons fitem_fgroup'));
-
-        $out .= html_writer::end_tag('form');
+        $formDispatch = new quiz_group_dispatchgrade_form($form_params, 'post');
 
 
-        echo $out;
-        //retreive submitted data, false if none
-        $data = data_submitted();
-
-        // is there submitted data?
-        if ($data !== false){
-            // Process dispatch grades.
-            if ($data->dispatchgrades == $apply_string && confirm_sesskey()){
-                dispatch_grade($quiz, $groupingID);
-            }
+        if($fromformDispatch = $formDispatch->get_data()){
+            dispatch_grade($quiz, $groupingID);
         }
+
+
+        $formDispatch->set_data($toform);
+        $formDispatch->display();
 
 
     }

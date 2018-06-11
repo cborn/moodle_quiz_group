@@ -42,12 +42,12 @@ class quiz_group_dispatchgrade_form extends moodleform {
         //todo: disable if no attempt
 
         $mform_dispatch = $this->_form;
-
-        $mform_dispatch->addElement('html', "<p>".get_string('dispatchgrade_info', 'quiz_group')."</p>");
+        $mform_dispatch->addElement('header', 'quizgroupdispatchgrades', get_string('titleapply', 'quiz_group'));
+        $mform_dispatch->addElement('html', "<p>".get_string('info_dispatchgrades', 'quiz_group')."</p>");
         $mform_dispatch->addElement('hidden', 'groupingid');
 
         //submit button
-        $mform_dispatch->addElement('submit', 'dispatch', get_string('dispatchgrades', 'quiz_group'));
+        $mform_dispatch->addElement('submit', 'dispatch', get_string('apply', 'quiz_group'));
     }
 
     function validation($data, $files) {
