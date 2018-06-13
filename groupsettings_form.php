@@ -47,7 +47,7 @@ class quiz_group_settings_form extends moodleform {
         //todo : fix hasattempt --> kills action button return url (bad quiz id)
         // if attempt block edit.
         /* $mform->addElement('hidden', 'hasattempts');
-         $mform->setType('hasattempts',PARAM_RAW);
+         $mform->setType('hasattempts',PARAM_BOOL);
          $mform->setDefault('hasattempts', false);
 
          if($this->_customdata['hasattempts']===true){

@@ -45,6 +45,7 @@ class quiz_group_dispatchgrade_form extends moodleform {
         $mform_dispatch->addElement('header', 'quizgroupdispatchgrades', get_string('titleapply', 'quiz_group'));
         $mform_dispatch->addElement('html', "<p>".get_string('info_dispatchgrades', 'quiz_group')."</p>");
         $mform_dispatch->addElement('hidden', 'groupingid');
+        $mform_dispatch->setType('groupingid',PARAM_INT);
 
         //submit button
         $mform_dispatch->addElement('submit', 'dispatch', get_string('apply', 'quiz_group'));
