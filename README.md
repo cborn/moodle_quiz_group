@@ -32,6 +32,13 @@ So every time a teacher edit an attempt in the result view of the quiz, or a stu
 * If a student is in more than one group in the same grouping, the system will only consider his first affiliation.
 * Do not change the grouping if some attempts exist for a given quiz.
 
+##### Privacy
+
+Regarding personal data handling, our plugin stores in its DB Table the userID with the corresponding quiz_attemptID for the Group representative.
+The Privacy API will be handled in a future release.
+
 
 ### TODO in the next update  
    * Do not allow grouping changing if an attempt already exist in the DB.
+   * Implement the Backup / Restore
+   
