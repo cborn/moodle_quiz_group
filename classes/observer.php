@@ -29,7 +29,6 @@ require_once($CFG->dirroot . '/mod/quiz/report/group/locallib.php');
  * @copyright 2017 Camille Tardy, University of Geneva
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
-
 class quiz_group_observer{
 
     /**
@@ -44,36 +43,35 @@ class quiz_group_observer{
 
         $attempt = $event->get_data();
         $cm = $PAGE->cm;
-        $quiz_id = $cm->instance;
+        $quizid = $cm->instance;
 
-        $groupingid = get_groupquiz_groupingid($quiz_id);
+        $groupingid = get_groupquiz_groupingid($quizid);
 
-
-        if($groupingid == null || $groupingid ==0){
+        if ($groupingid == null || $groupingid == 0) {
             // if grp_quiz is not enabled do nothing
 
-        }else{
+        } else {
             //check if a user from the same group is trying to attempt quiz when we already have an attempt for this group.
-            $user_grp = get_user_group_for_groupquiz($attempt['userid'], $quiz_id, $attempt['courseid']);
+            $usergrp = get_user_group_for_groupquiz($attempt['userid'], $quizid, $attempt['courseid']);
 
-            $attempt_grp_inDB = $DB->get_records('quiz_group_attempts', array('quizid'=>$quiz_id, 'groupid'=>$user_grp, 'groupingid'=>$groupingid));
-            if (!empty($attempt_grp_inDB)){
+            $attemptgrpindb = $DB->get_records('quiz_group_attempts', array('quizid' => $quizid, 'groupid' => $usergrp, 'groupingid' => $groupingid));
+            if (!empty($attemptgrpindb)) {
                 // An attempt already exist for this group block current user attempt
-                $grp_attemptID = 0;
-                $grp_name = $DB->get_field('groups', 'name', array('id'=>$user_grp));
+                $grpattemptid = 0;
+                $grpname = $DB->get_field('groups', 'name', array('id'=>$usergrp));
                 //return to view quiz page with message  : warning(yellow) --> NOTIFY_WARNING // error(red) --> NOTIFY_ERROR
-                redirect(new moodle_url('/mod/quiz/view.php', array('id' => $cm->id)), get_string('group_attempt_already_created', 'quiz_group', $grp_name), null, \core\output\notification::NOTIFY_ERROR);
+                redirect(new moodle_url('/mod/quiz/view.php', array('id' => $cm->id)), get_string('group_attempt_already_created', 'quiz_group', $grpname), null, \core\output\notification::NOTIFY_ERROR);
 
-            }else{
+            } else {
                 // no attempt yet for this group : proceed with current user
 
-                $group_attempt = quiz_group_attempt_to_groupattempt_dbobject($attempt, $quiz_id, $user_grp, $groupingid);
+                $groupattempt = quiz_group_attempt_to_groupattempt_dbobject($attempt, $quizid, $usergrp, $groupingid);
 
                 //save in DB
-                $grp_attemptID = $DB->insert_record('quiz_group_attempts', $group_attempt, true);
+                $grpattemptid = $DB->insert_record('quiz_group_attempts', $groupattempt, true);
             }
 
-            return $grp_attemptID;
+            return $grpattemptid;
         }
 
 
@@ -86,35 +84,35 @@ class quiz_group_observer{
      * @param \mod_quiz\event\attempt_submitted $event
      * @return bool
      */
-    public static function attempt_submitted(core\event\base $event){
+    public static function attempt_submitted(core\event\base $event) {
         global $DB;
 
         $attempt = $event->get_data();
-        $quiz_id = $attempt['other']['quizid'];
-        $user_id = $attempt['userid'];
-        $attempt_id = $attempt['objectid'];
-        $course_id = $attempt['courseid'];
+        $quizid = $attempt['other']['quizid'];
+        $userid = $attempt['userid'];
+        $attemptid = $attempt['objectid'];
+        $courseid = $attempt['courseid'];
 
-        $groupingid = get_groupquiz_groupingid($quiz_id);
+        $groupingid = get_groupquiz_groupingid($quizid);
 
-        if($groupingid == null || $groupingid ==0){
+        if ($groupingid == null || $groupingid == 0) {
             // of grp_quiz is not enabled do nothing
-        }else{
+        } else {
 
-            $gid = get_user_group_for_groupquiz($user_id, $quiz_id, $course_id);
+            $gid = get_user_group_for_groupquiz($userid, $quizid, $courseid);
 
             //retrieve grp attempt object
-            $grp_attempt = $DB->get_record('quiz_group_attempts', array('groupid'=>$gid, 'quizid'=>$quiz_id));
+            $grpattempt = $DB->get_record('quiz_group_attempts', array('groupid' => $gid, 'quizid' => $quizid));
 
-            if(!empty($grp_attempt)){
+            if (!empty($grpattempt)) {
                 //edit grp attempt
-                $grp_attempt->attemptid = $attempt_id;
+                $grpattempt->attemptid = $attemptid;
                 //save in DB
-                $DB->update_record('quiz_group_attempts',  $grp_attempt, false);
-            }else {
+                $DB->update_record('quiz_group_attempts',  $grpattempt, false);
+            } else {
                 //ERROR : Grp attempt not in DB
                 //create grp_attempt if not in DB
-                create_groupattempt_from_attempt($attempt,$course_id);
+                create_groupattempt_from_attempt($attempt,$courseid);
             }
         }
 
@@ -132,15 +130,15 @@ class quiz_group_observer{
         global $DB;
 
         $attempt = $event->get_data();
-        $quiz_id = $attempt['other']['quizid'];
-       // $attempt_id = $attempt['objectid'];
-        $user_id = $attempt['relateduserid'];
+        $quizid = $attempt['other']['quizid'];
+       // $attemptid = $attempt['objectid'];
+        $userid = $attempt['relateduserid'];
 
         //attempt can be null in grp_attempt if attempt never submitted by user
         //better to retreive attempt via quizid and userid
 
         //delete record in DB
-        $DB->delete_records('quiz_group_attempts', array('quizid'=>$quiz_id, 'userid'=>$user_id));
+        $DB->delete_records('quiz_group_attempts', array('quizid' => $quizid, 'userid' => $userid));
 
         return true ;
     }
@@ -170,9 +168,9 @@ class quiz_group_observer{
        // $groupid = get_user_group_for_groupquiz($userid, $quizid, $courseid);
 
         //delete record in DB for group in quiz
-        $DB->delete_records('quiz_group_attempts', array('quizid'=>$quizid, 'userid'=>$userid));
+        $DB->delete_records('quiz_group_attempts', array('quizid' => $quizid, 'userid' => $userid));
 
-        return true ;
+        return true;
     }
 
 

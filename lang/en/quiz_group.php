@@ -34,7 +34,7 @@ $string['settings_edited'] = 'The quiz has been edited with the following groupi
 $string['title_groupingselect'] = 'Choose the grouping for the quiz';
 $string['no_group_string'] = 'No grouping';
 $string['quiz_has_attempts'] = 'This quiz already has attempts. You can no longer update the group setting.';
-$string['canceledit'] ='You have canceled the edition of group setting.';
+$string['canceledit'] = 'You have canceled the edition of group setting.';
 $string['group_attempt_already_created'] = 'An attempt for this Group quiz for your group : {$a}, already exist.';
 
 $string['titleapply'] = 'Transfer group grades';

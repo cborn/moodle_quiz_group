@@ -44,7 +44,7 @@ class quiz_group_settings_form extends moodleform {
 
         $mform->addElement('header', 'quizgroupsubmission', get_string('quizgroup', 'quiz_group'));
 
-        //todo : fix hasattempt --> kills action button return url (bad quiz id)
+        // todo : fix hasattempt --> kills action button return url (bad quiz id)
         // if attempt block edit.
         /* $mform->addElement('hidden', 'hasattempts');
          $mform->setType('hasattempts',PARAM_BOOL);
@@ -60,7 +60,7 @@ class quiz_group_settings_form extends moodleform {
 
         $mform->addElement('html', "<h4>".get_string('title_groupingselect', 'quiz_group')."</h4>");
 
-        //get grouping list from course
+        // get grouping list from course
         $groupings = groups_get_all_groupings($COURSE->id);
         $options = array();
         $options[0] = get_string('no_grouping', 'quiz_group');
@@ -71,15 +71,14 @@ class quiz_group_settings_form extends moodleform {
         // create select element and pre-select current value
         $mform->addElement('select', 'sel_groupingid', get_string('teamsubmissiongroupingid', 'assign'), $options);
 
-
         //submit button
         $mform->addElement('submit', 'savechanges', get_string('savechanges', 'quiz_group'));
-        //$mform->disabledIf('submitbutton', 'hasattempts', 'eq',true);
-        //$mform->disabledIf('sel_groupingid', 'hasattempts', 'eq',true);
+        // $mform->disabledIf('submitbutton', 'hasattempts', 'eq',true);
+        // $mform->disabledIf('sel_groupingid', 'hasattempts', 'eq',true);
 
     }
 
     function validation($data, $files) {
-        //No form validation needed yet.
+        // No form validation needed yet.
     }
 }

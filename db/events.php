@@ -36,7 +36,7 @@ $observers = array(
         'callback' => 'quiz_group_observer::attempt_submitted',
     ),
 
-    //catch attempt abandoned
+    // catch attempt abandoned
     array(
         'eventname' => '\mod_quiz\event\attempt_abandoned',
         'callback' => 'quiz_group_observer::attempt_abandoned',
