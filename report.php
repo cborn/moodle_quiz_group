@@ -53,7 +53,7 @@ class quiz_group_report extends quiz_default_report{
      */
     public function display($quiz, $cm, $course)
     {
-        global $DB, $PAGE;
+        global $DB;
      //   global $OUTPUT;
 
         $this->quiz = $quiz;

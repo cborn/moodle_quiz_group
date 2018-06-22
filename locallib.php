@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Return grouping used in Group quiz or false if not found
  * @param $quizid
- * @return $groupingid
+ * @return int $groupingid
  */
 function get_groupquiz_groupingid($quizid){
     global $DB;
@@ -56,10 +56,11 @@ function get_groupquiz_groupingid($quizid){
  * @param int $userid
  * @param int $quizid
  * @param int $courseid
+ * @param int $groupingid
  *
- * @return $grpid
+ * @return int $grpid
  */
-function get_user_group_for_groupquiz($userid, $quizid, $courseid, $groupingID = null){
+function get_user_group_for_groupquiz($userid, $quizid, $courseid, $groupingid = null){
     // retreive all groups for user
     $user_grpids = groups_get_user_groups($courseid, $userid);
     //keep only grp ids
@@ -74,12 +75,12 @@ function get_user_group_for_groupquiz($userid, $quizid, $courseid, $groupingID =
     }
 
     // retrieve grouping ID used in Quiz_group
-    if($groupingID == null ){
-        $groupingID = get_groupquiz_groupingid($quizid);
+    if($groupingid == null ){
+        $groupingid = get_groupquiz_groupingid($quizid);
     }
 
     // filter group from grouping.
-    $grpsingrouping = groups_get_all_groups(intval($courseid), null ,intval($groupingID));
+    $grpsingrouping = groups_get_all_groups(intval($courseid), null ,intval($groupingid));
     $grps_in_ging = array();
     //keep only grp ids
     foreach ($grpsingrouping as $gp){
@@ -103,7 +104,11 @@ function get_user_group_for_groupquiz($userid, $quizid, $courseid, $groupingID =
  * Transform an attempt obj (event) in a group attempt object to save in DB
  *
  * @param quiz_attempt $attempt
- * @return group_attempt
+ * @param int $quizid
+ * @param int $grpid
+ * @param int $groupingid
+ *
+ * @return object $grp_attempt
  */
 function quiz_group_attempt_to_groupattempt_dbobject($attempt, $quizid, $grpid, $groupingid){
 
@@ -136,7 +141,7 @@ function quiz_group_attempt_to_groupattempt_dbobject($attempt, $quizid, $grpid, 
  * @param $attempt
  * @param $courseid
  */
-function create_grpattempt_from_attempt($attempt,$courseid)
+function create_groupattempt_from_attempt($attempt,$courseid)
 {
     global $DB;
 
@@ -169,8 +174,9 @@ function create_grpattempt_from_attempt($attempt,$courseid)
 
 /**
  * Dispatch grade function.
- * @param quizid $quizid
- * @param groupingid $groupingID
+ *
+ * @param quiz $quiz
+ * @param int $groupingID
  *
  */
 function dispatch_grade($quiz, $groupingID) {
@@ -194,7 +200,7 @@ function dispatch_grade($quiz, $groupingID) {
             //if user not in correct grouping do not create
             $grpid = get_user_group_for_groupquiz($att->userid, $quizid, $courseid);
             if($grpid > 0){
-                create_grpattempt_from_attempt($att,$courseid);
+                create_groupattempt_from_attempt($att,$courseid);
             }// if user not in grouping do not create grp_attempt
         }
     }
@@ -282,7 +288,7 @@ function dispatch_grade($quiz, $groupingID) {
  * @param int $courseid The course ID.
  * @return void
  */
-function quiz_process_grp_deleted_in_course($courseid) {
+function quiz_process_group_deleted_in_course($courseid) {
     global $DB;
 
 
