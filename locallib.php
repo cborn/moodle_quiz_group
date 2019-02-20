@@ -285,7 +285,7 @@ function dispatch_grade($quiz, $groupingid) {
  * @param int $courseid The course ID.
  * @return void
  */
-function quiz_process_group_deleted_in_course($courseid) {
+function quiz_process_grp_deleted_in_course($courseid) {
     global $DB;
 
 

@@ -201,7 +201,7 @@ class quiz_group_observer{
     public static function course_reset_ended($event) {
         if (!empty(self::$resetinprogress)) {
             if (!empty($event->other['reset_options']['reset_groups_remove'])) {
-                quiz_process_group_deleted_in_course($event->courseid);
+                quiz_process_grp_deleted_in_course($event->courseid);
             }
         }
 
@@ -219,7 +219,7 @@ class quiz_group_observer{
             // We will take care of that once the course reset ends.
             return;
         }
-        quiz_process_group_deleted_in_course($event->courseid);
+        quiz_process_grp_deleted_in_course($event->courseid);
     }
 
 }
