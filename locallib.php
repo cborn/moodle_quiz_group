@@ -22,6 +22,9 @@
  * @package   quiz_group
  * @copyright 2017 Camille Tardy, University of Geneva
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * updates by Carly J. Born, Carleton College
+ * updated to work with Moodle 3.7
  */
 
 
@@ -151,6 +154,7 @@ function create_groupattempt_from_attempt($attempt, $courseid) {
     $grpatt->quizid = $quizid;
     $grpatt->groupingid =
     $grpatt->timemodified = time(); //now
+    $grpatt->userid = $userid;
 
     $grpatt->groupid = get_user_group_for_groupquiz($userid, $quizid, $courseid, $groupingid);
 
@@ -162,7 +166,7 @@ function create_groupattempt_from_attempt($attempt, $courseid) {
         $DB->insert_record('quiz_group_attempts', $grpatt);
     } else if($groupingid>0 && $grpatt->groupid == 0) {
         //do not save group attempt if its value is 0, and display error message
-        //dispaly error message user not in grouing selected for group quiz
+        //displaly error message user not in grouping selected for group quiz
         \core\notification::error(get_string('user_notin_grouping', 'quiz_group'));
     }
 
@@ -225,7 +229,7 @@ function dispatch_grade($quiz, $groupingid) {
             }
         }
 
-        //duplicate grade for each user iin list
+        //duplicate grade for each user in list
         foreach ($users as $u) {
             //delete current user of users list
             if ($u->id == $attempt->userid) {
@@ -234,6 +238,7 @@ function dispatch_grade($quiz, $groupingid) {
 
                 // Deal with quiz grade table
                 $insertgrade->userid = $u->id;
+
                 // if not already in DB
                 $userquizgradedb = $DB->get_record('quiz_grades', array('quiz' => $quizid, 'userid' => $u->id));
                 if ($userquizgradedb == false) {
