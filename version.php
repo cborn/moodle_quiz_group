@@ -19,15 +19,16 @@
  *
  * @package   quiz_group
  * @copyright 2017 Camille Tardy, University of Geneva
+ * @updated 2020 Carly J. Born, Carleton College
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2019042900;
+$plugin->version  = 2020042100;
 $plugin->requires  =2016051900;
 $plugin->component = 'quiz_group';
 
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'v3.1-r3';
+$plugin->release = 'v3.1-r4';
 
